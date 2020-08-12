@@ -346,7 +346,7 @@ func (s *Server) SetQuicHeaders(hdr http.Header) error {
 		atomic.StoreUint32(&s.port, port)
 	}
 
-	hdr.Add("Alt-Svc", fmt.Sprintf(`%s=":%d"; ma=2592000`, nextProtoH3, port))
+	hdr.Add("Alt-Svc", fmt.Sprintf(`%s=":%d"; ma=2592000,quic=":443"; ma=2592000, h3-23=":443", ma=2592000`, nextProtoH3, port))
 
 	return nil
 }
