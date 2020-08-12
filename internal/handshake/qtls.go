@@ -6,7 +6,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/lucas-clemente/quic-go/internal/utils"
+	"github.com/IRelaxxx/quic-go/internal/utils"
 
 	"github.com/marten-seemann/qtls"
 )

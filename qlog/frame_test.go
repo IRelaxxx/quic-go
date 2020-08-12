@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/qerr"
-	"github.com/lucas-clemente/quic-go/logging"
+	"github.com/IRelaxxx/quic-go/internal/protocol"
+	"github.com/IRelaxxx/quic-go/internal/qerr"
+	"github.com/IRelaxxx/quic-go/logging"
 
 	"github.com/francoispqt/gojay"
 

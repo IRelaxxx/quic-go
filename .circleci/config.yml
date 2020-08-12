@@ -14,7 +14,7 @@ executors:
 jobs:
   "test": &test
     executor: test-go114
-    working_directory: /go/src/github.com/lucas-clemente/quic-go
+    working_directory: /go/src/github.com/IRelaxxx/quic-go
     steps:
       - checkout
       - run:
@@ -68,7 +68,7 @@ jobs:
           at: /tmp/workspace
       - setup_remote_docker
       - run:
-          name: Load archived Docker image 
+          name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Publish quic-go-interop

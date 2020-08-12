@@ -6,8 +6,8 @@ import (
 	"net"
 	"sync"
 
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/logging"
+	"github.com/IRelaxxx/quic-go/internal/utils"
+	"github.com/IRelaxxx/quic-go/logging"
 )
 
 var (

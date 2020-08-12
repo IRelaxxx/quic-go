@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/mocks"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/quictrace"
+	"github.com/IRelaxxx/quic-go/internal/mocks"
+	"github.com/IRelaxxx/quic-go/internal/protocol"
+	"github.com/IRelaxxx/quic-go/quictrace"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
