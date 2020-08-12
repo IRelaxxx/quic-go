@@ -1,0 +1,9 @@
+version "3.6"
+services:
+  test:
+    image: akrahl/http3test:latest
+    restart: always
+    container_name: test
+    volumes:
+      - /home/akrahl/bachelor/certs:/certs
+      - /home/akrahl/bachelor/www:/www

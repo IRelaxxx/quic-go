@@ -2,14 +2,12 @@ package main
 
 import (
 	"bufio"
-	"crypto/md5"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"strconv"
@@ -20,11 +18,10 @@ import (
 
 	"github.com/IRelaxxx/quic-go"
 	"github.com/IRelaxxx/quic-go/http3"
-	"github.com/IRelaxxx/quic-go/internal/testdata"
-	"github.com/IRelaxxx/quic-go/internal/utils"
 	"github.com/IRelaxxx/quic-go/logging"
 	"github.com/IRelaxxx/quic-go/qlog"
 	"github.com/IRelaxxx/quic-go/quictrace"
+	"github.com/IRelaxxx/quic-go/utils"
 )
 
 type binds []string
@@ -139,37 +136,6 @@ func setupHandler(www string, trace bool) http.Handler {
 		w.Write(body)
 	})
 
-	// accept file uploads and return the MD5 of the uploaded file
-	// maximum accepted file size is 1 GB
-	mux.HandleFunc("/demo/upload", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			err := r.ParseMultipartForm(1 << 30) // 1 GB
-			if err == nil {
-				var file multipart.File
-				file, _, err = r.FormFile("uploadfile")
-				if err == nil {
-					var size int64
-					if sizeInterface, ok := file.(Size); ok {
-						size = sizeInterface.Size()
-						b := make([]byte, size)
-						file.Read(b)
-						md5 := md5.Sum(b)
-						fmt.Fprintf(w, "%x", md5)
-						return
-					}
-					err = errors.New("couldn't get uploaded file size")
-				}
-			}
-			if err != nil {
-				utils.DefaultLogger.Infof("Error receiving upload: %#v", err)
-			}
-		}
-		io.WriteString(w, `<html><body><form action="/demo/upload" method="post" enctype="multipart/form-data">
-				<input type="file" name="uploadfile"><br>
-				<input type="submit">
-			</form></body></html>`)
-	})
-
 	if !trace {
 		return mux
 	}
@@ -179,16 +145,16 @@ func setupHandler(www string, trace bool) http.Handler {
 func main() {
 	// defer profile.Start().Stop()
 	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
+		log.Println(http.ListenAndServe("localhost:80", nil))
 	}()
 	// runtime.SetBlockProfileRate(1)
 
-	verbose := flag.Bool("v", false, "verbose")
+	verbose := flag.Bool("v", true, "verbose")
 	bs := binds{}
 	flag.Var(&bs, "bind", "bind to")
 	www := flag.String("www", "", "www data")
 	tcp := flag.Bool("tcp", false, "also listen on TCP")
-	trace := flag.Bool("trace", false, "enable quic-trace")
+	trace := flag.Bool("trace", true, "enable quic-trace")
 	enableQlog := flag.Bool("qlog", false, "output a qlog (in the same directory)")
 	flag.Parse()
 
@@ -202,7 +168,7 @@ func main() {
 	logger.SetLogTimeFormat("")
 
 	if len(bs) == 0 {
-		bs = binds{"localhost:6121"}
+		bs = binds{"localhost:443"}
 	}
 
 	handler := setupHandler(*www, *trace)
@@ -229,14 +195,13 @@ func main() {
 		go func() {
 			var err error
 			if *tcp {
-				certFile, keyFile := testdata.GetCertificatePaths()
-				err = http3.ListenAndServe(bCap, certFile, keyFile, nil)
+				err = http3.ListenAndServe(bCap, "/certs/cert1.pem", "/certs/privkey1.pem", handler)
 			} else {
 				server := http3.Server{
 					Server:     &http.Server{Handler: handler, Addr: bCap},
 					QuicConfig: quicConf,
 				}
-				err = server.ListenAndServeTLS(testdata.GetCertificatePaths())
+				err = server.ListenAndServeTLS("/certs/cert1.pem", "/certs/privkey1.pem")
 			}
 			if err != nil {
 				fmt.Println(err)
