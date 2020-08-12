@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/lucas-clemente/quic-go"
-	"github.com/lucas-clemente/quic-go/internal/utils"
+	"github.com/IRelaxxx/quic-go"
+	"github.com/IRelaxxx/quic-go/internal/utils"
 	"github.com/marten-seemann/qpack"
 )
 
